@@ -25,7 +25,8 @@ public class JdbcSignup {
         email = in.nextLine();
 
         int id = signup(name, password, email);
-        System.out.println("注册成功，您的id为"+id+"\n");
+        if(id == 0) System.out.println("您的用户名已经被占用，注册失败；");
+        else System.out.println("注册成功，您的id为"+id+"\n");
 
 
     }
@@ -42,11 +43,22 @@ public class JdbcSignup {
             con = JdbcUtil.getConnection();
             sta = con.prepareStatement(sql);//预编译sql语句， 先写sql但不执行
 
-            //手动给参数赋值
-            ResultSet resset = con.prepareStatement("SELECT MAX(id) AS id FROM users;").executeQuery();
+
+
+                //id值自增
+            PreparedStatement temPreSta = con.prepareStatement("SELECT MAX(id) AS id FROM users;");
+            ResultSet resset = temPreSta.executeQuery();
             resset.next();
-            int id = resset.getInt("id");//id值自增
+            int id = resset.getInt("id");
             result = id+1;
+            JdbcUtil.release(null, temPreSta, resset);//防止内存泄漏
+                //验证用户名是否重复
+            PreparedStatement temPreSta2 = con.prepareStatement("SELECT NAME FROM users WHERE NAME = ?;");
+            temPreSta2.setString(1, username);
+            ResultSet tempRes = temPreSta2.executeQuery();
+            if(tempRes.next())  return 0;
+
+            //手动给参数赋值
             sta.setInt(1, id+1);
             sta.setString(2,username);
             sta.setString(3,password);

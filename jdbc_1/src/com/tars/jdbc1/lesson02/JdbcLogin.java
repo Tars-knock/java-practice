@@ -11,6 +11,8 @@ import java.util.Scanner;
 public class JdbcLogin {
 
     public static void main(String[] args) {
+        //输入用户名 密码
+        //SQL注入  则输入：name:“or” 1=1 password:"or" 1=1
         Scanner in = new Scanner(System.in);
         System.out.println("What is your name?");
         String name = in.nextLine();
@@ -21,6 +23,7 @@ public class JdbcLogin {
         else System.out.println("Please check your username or password");
     }
 
+    //连接数据库进行检查
     public static boolean login(String username, String password) {
 
         Connection con = null;
@@ -34,6 +37,11 @@ public class JdbcLogin {
             res = sta.executeQuery("SELECT * FROM users WHERE NAME = \""+username+"\" AND PASSWORD = \""+password+"\";");
 
             result = res.next();
+            while(res.next()){
+                System.out.println(res.getObject("name"));
+                System.out.println(res.getObject("password"));
+                System.out.println("==========");
+            }
 
         } catch (SQLException throwables) {
             throwables.printStackTrace();
