@@ -7,12 +7,7 @@ public class HashMapDevil {
     public static void main(String[] args) {
 
         for (int i = 0 ; i < 100000 ; i++){
-            (new Thread(){
-                @Override
-                public void run() {
-                    hashMap.put(System.nanoTime(),new Socket());
-                }
-            }).start();
+            (new Thread(() -> hashMap.put(System.nanoTime(),new Socket()))).start();
             System.out.println("========创建第"+i+"个线程");
         }
     }
