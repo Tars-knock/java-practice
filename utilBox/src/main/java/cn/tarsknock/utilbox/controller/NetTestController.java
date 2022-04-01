@@ -6,9 +6,11 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Controller;
+import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletRequest;
+import java.util.Objects;
 
 @RestController
 @Slf4j
@@ -22,6 +24,8 @@ public class NetTestController {
     @Value("${dns.ali.domainName}")
     private String domainName;
 
+    private String cache;
+
     @GetMapping("ping")
     public Integer ping(HttpServletRequest request){
         String ip = netTestService.pingServer(request);
@@ -30,10 +34,10 @@ public class NetTestController {
     }
     @GetMapping("updateDns")
     public String updateDns(HttpServletRequest request, @RequestParam String ip){
-        if(request.getSession().getAttribute("natIp") == ip){
+        if(ip!=null && ip.equals(cache)){
             return "need`t update"+ip;
-        }else{
-            request.getSession().setAttribute("natIp", ip);
+        }else if(ip!=null){
+            cache = ip;
             if(aliDnsService.registerDns(ip, domainName)){
                 log.info("update DDNS success! your new ip:{}", ip);
                 return "success,"+ip;
@@ -41,6 +45,9 @@ public class NetTestController {
                 log.info("update fail, check the log ip:{}", ip);
                 return "fail!!";
             }
+        }else{
+            log.info("ip is null!!");
+            return "ip is null!";
         }
     }
 }
