@@ -35,6 +35,7 @@ public class NetTestController {
     @GetMapping("updateDns")
     public String updateDns(HttpServletRequest request, @RequestParam String ip){
         if(ip!=null && ip.equals(cache)){
+            log.info("a repeat ip:{}", ip);
             return "need`t update"+ip;
         }else if(ip!=null){
             cache = ip;
