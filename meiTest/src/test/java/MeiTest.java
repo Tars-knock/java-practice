@@ -3,6 +3,11 @@ import org.junit.jupiter.api.Test;
 import java.util.*;
 
 public class MeiTest {
+    //leetcode周赛288
+
+    /**
+     * 2231. 按奇偶性交换后的最大数字
+     */
     public int largestInteger(int num) {
         String s = String.valueOf(num);
         int len = s.length();
@@ -36,6 +41,11 @@ public class MeiTest {
         }
         return Integer.parseInt(sb.toString());
     }
+
+    /**
+     *2232. 向表达式添加括号后的最小结果
+     * 有边界问题
+     */
     public String minimizeResult(String expression) {
         int mid = expression.indexOf('+');
         String lefts = expression.substring(0, mid), rights = expression.substring(mid+1);
@@ -63,12 +73,14 @@ public class MeiTest {
         System.out.println(lefts.substring(0, i)+"("+lefts.substring(i)+"+"+rights.substring(0, j)+")"+rights.substring(j)+" "+res);
         return res;
     }
-
     @Test
     public void test(){
-        System.out.println(minimizeResult("999+999"));
+        System.out.println(minimizeResult("5+22"));
     }
 
+    /**
+     *56. 合并区间
+     */
     public int[][] merge(int[][] intervals) {
         Arrays.sort(intervals, (a1, a2)->(a1[0]-a2[0]));
         List<int[]> res = new ArrayList<>();
@@ -84,6 +96,21 @@ public class MeiTest {
         }
         return res.toArray(new int[1][1]);
     }
+    public int[][] mergePlus(int[][] intervals){
+        Arrays.sort(intervals, (a1, a2)->(a1[0]-a2[0]));
+        Stack<int[]> res = new Stack<>();
+        for (int[] temp :
+                intervals) {
+            if (res.isEmpty() || res.peek()[1] < temp[0]) {
+                res.add(temp);
+            }else{
+                int[] p = res.pop();
+                res.add(new int[]{p[0], Math.max(temp[1], p[1])});
+            }
+        }
+        return res.toArray(new int[1][1]);
+    }
+
 }
 
 
