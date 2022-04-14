@@ -1,4 +1,5 @@
 import org.junit.jupiter.api.Test;
+import org.w3c.dom.Node;
 
 import java.util.*;
 
@@ -121,16 +122,58 @@ public class MeiTest {
             p[0] = 1;
         }
         for (int i = 1; i < m; i++) {
-            for(int j = 1;j<n;j++){
-                dp[i][j] = dp[i-1][j] + dp[i][j-1];
+            for (int j = 1; j < n; j++) {
+                dp[i][j] = dp[i - 1][j] + dp[i][j - 1];
             }
         }
-        return dp[m-1][n-1];
+        return dp[m - 1][n - 1];
     }
 
     @Test
     public void testUniquePaths() {
         uniquePaths(23, 12);
+    }
+
+    /**
+     * 102. 二叉树的层序遍历
+     */
+    public List<List<Integer>> levelOrder(TreeNode root) {
+        List<List<Integer>> res = new LinkedList<>();
+        if(root == null) return res;
+        Deque<TreeNode> queue = new LinkedList<>();
+        queue.add(root);
+
+        while (!queue.isEmpty()) {
+            List<Integer> temp = new LinkedList<>();
+            for (int i = queue.size(); i > 0; i--) {
+                TreeNode tempNode = queue.pop();
+                if (tempNode.left != null) queue.add(tempNode.left);
+                if (tempNode.right != null) queue.add(tempNode.right);
+                temp.add(tempNode.val);
+            }
+            res.add(new LinkedList<>(temp));
+        }
+        return res;
+    }
+
+    //    Definition for a binary tree node.
+    class TreeNode {
+        int val;
+        TreeNode left;
+        TreeNode right;
+
+        TreeNode() {
+        }
+
+        TreeNode(int val) {
+            this.val = val;
+        }
+
+        TreeNode(int val, TreeNode left, TreeNode right) {
+            this.val = val;
+            this.left = left;
+            this.right = right;
+        }
     }
 
 }
