@@ -176,6 +176,43 @@ public class MeiTest {
         }
     }
 
+    /**
+     * 45. 跳跃游戏 II
+     */
+    public int jump(int[] nums) {
+        int len = nums.length, max = nums[0];
+        int[] dp = new int[len];
+        Arrays.fill(dp, len);
+        dp[len-1] = 0;
+        for(int i = len-2;i>=0;i--){
+            if(len-1 - i <= nums[i]){
+                dp[i] = 1;
+            }else{
+                for(int j = 1;j<=nums[i];j++){
+                    dp[i] = Math.min(dp[i], 1+dp[i+j]);
+                }
+            }
+        }
+        return dp[0];
+    }
+    @Test
+    public void testJump() {
+        jump2(new int[] {1,2});
+    }
+    public int jump2(int[] nums) {
+        int len = nums.length;
+        int end =0;
+        int max = 0;
+        int res =0;
+        for (int i = 0; i < len-1; i++) {
+            max = Math.max(max, i+nums[i]);
+            if(i == end){
+                end = max;
+                res++;
+            }
+        }
+        return res;
+    }
 }
 
 
