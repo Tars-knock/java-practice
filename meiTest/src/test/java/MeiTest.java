@@ -139,7 +139,7 @@ public class MeiTest {
      */
     public List<List<Integer>> levelOrder(TreeNode root) {
         List<List<Integer>> res = new LinkedList<>();
-        if(root == null) return res;
+        if (root == null) return res;
         Deque<TreeNode> queue = new LinkedList<>();
         queue.add(root);
 
@@ -183,35 +183,173 @@ public class MeiTest {
         int len = nums.length, max = nums[0];
         int[] dp = new int[len];
         Arrays.fill(dp, len);
-        dp[len-1] = 0;
-        for(int i = len-2;i>=0;i--){
-            if(len-1 - i <= nums[i]){
+        dp[len - 1] = 0;
+        for (int i = len - 2; i >= 0; i--) {
+            if (len - 1 - i <= nums[i]) {
                 dp[i] = 1;
-            }else{
-                for(int j = 1;j<=nums[i];j++){
-                    dp[i] = Math.min(dp[i], 1+dp[i+j]);
+            } else {
+                for (int j = 1; j <= nums[i]; j++) {
+                    dp[i] = Math.min(dp[i], 1 + dp[i + j]);
                 }
             }
         }
         return dp[0];
     }
+
     @Test
     public void testJump() {
-        jump2(new int[] {1,2});
+        jump2(new int[]{1, 2});
     }
+
     public int jump2(int[] nums) {
         int len = nums.length;
-        int end =0;
+        int end = 0;
         int max = 0;
-        int res =0;
-        for (int i = 0; i < len-1; i++) {
-            max = Math.max(max, i+nums[i]);
-            if(i == end){
+        int res = 0;
+        for (int i = 0; i < len - 1; i++) {
+            max = Math.max(max, i + nums[i]);
+            if (i == end) {
                 end = max;
                 res++;
             }
         }
         return res;
+    }
+
+    public void findc(int[] nums) {
+        int cur, count = 0;
+        int res, maxCount = 0;
+        Arrays.sort(nums);//排序
+        cur = nums[0];
+        for (int i = 0; i < nums.length; i++) {
+            if (nums[i] == cur) {
+                count++;
+            } else {
+                if (count > maxCount) {
+                    res = cur;
+                    maxCount = count;
+                }
+                cur = nums[i];
+            }
+        }
+    }
+
+    @Test
+    public void integerEqualTest() {
+        Integer v1 = 199;
+        Integer v2 = 199;
+        System.out.println("Integer == Integer? " + (v1 == v2));
+        Integer a1 = 127;
+        Integer a2 = 127;
+        System.out.println("127 == 127?  " + (a1 == a2));
+    }
+
+    /**
+     * 292周赛
+     */
+    public String largestGoodInteger(String num) {
+        int res = -1;
+        char[] sc = num.toCharArray();
+        for (int i = 2; i < sc.length; i++) {
+            if (sc[i] == sc[i - 2] && sc[i] == sc[i - 1]) {
+                res = Math.max(res, sc[i] - '0' + 10 * (sc[i - 1] - '0') + 100 * (sc[i - 2] - '0'));
+            }
+        }
+        if (res == -1) return "";
+        else if (res == 0) return "000";
+        else return String.valueOf(res);
+
+    }
+
+    //暴力
+    int count = 0;
+    int sum = 0;
+    int res = 0;
+
+    public int averageOfSubtree(TreeNode root) {
+        Stack<TreeNode> stack = new Stack<>();
+        stack.push(root);
+        while (!stack.isEmpty()) {
+            TreeNode temp = stack.pop();
+            if (temp.left != null) stack.push(temp.left);
+            if (temp.right != null) stack.push(temp.right);
+            if (check(temp)) res++;
+        }
+        return res;
+    }
+
+    public boolean check(TreeNode root) {
+        count = 0;
+        sum = 0;
+        dfs(root);
+        return sum / count == root.val;
+    }
+
+    public void dfs(TreeNode root) {
+        if (root != null) {
+            count++;
+            sum += root.val;
+            dfs(root.left);
+            dfs(root.right);
+        }
+    }
+
+    public long countTexts(String pressedKeys) {
+//    public int countTexts(String pressedKeys) {
+        final int NORMAL3 = 4;  //连击三次79之外的按键 可能表达的意思
+        final int OTHER4 = 7; //连击四次79 可能表达的意思
+        int[] poss = new int[] {0,1,2,4,7};
+        char[] sc = pressedKeys.toCharArray();
+        long res = 1;
+        for (int i = 0; i < pressedKeys.length();) {
+            int temp = findLength(sc, i);
+            System.out.println(temp);
+            i+=temp;
+            res *= poss[temp];
+
+        }
+//        return (int) (res%(10E7+9));
+        return res;
+
+    }
+    public int findLength(char[] sc, int start){
+        char target = sc[start];
+        int res = 1;
+        for (int i = start+1; i < sc.length; i++) {
+            if (sc[i] == target) {
+                res ++;
+            }else{
+                return res;
+            }
+            if(res == 3 && target != '7' && target != '9') return res;
+            else if((target == '7' || target == '9') && res == 4) return res;
+        }
+        return res;
+    }
+
+    @Test
+    public void testCountTexts(){
+        System.out.println(countTexts("222222222222222222222222222222222222"));
+    }
+
+    /**
+     * 953. 验证外星语词典 5/17
+     */
+    public boolean isAlienSorted(String[] words, String order) {
+        char[] sc = order.toCharArray();
+        Map<Character, Integer> orderMap = new HashMap<>();
+        orderMap.put('-', -1);  //空白字符
+        for (int i = 0; i < sc.length; i++) {
+            orderMap.put(sc[i], i);
+        }
+        for(int w = 1;w<words.length;w++){
+            String s1 = words[w-1]+"-", s2 = words[w]+"-";
+            for(int i = 0;i<Math.min(s1.length(), s2.length());i++){
+                if(orderMap.get(s1.charAt(i)) > orderMap.get(s2.charAt(i))) return false;
+                else if(orderMap.get(s1.charAt(i)) < orderMap.get(s2.charAt(i))) break;
+            }
+        }
+        return true;
     }
 }
 
