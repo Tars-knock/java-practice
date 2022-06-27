@@ -414,7 +414,36 @@ public class MeiTest {
         return dp[m-1][n-1];
 
     }
+
+    public ListNode getIntersectionNode(ListNode headA, ListNode headB) {
+        HashSet<ListNode> set = new HashSet<>();
+        ListNode p = headA;
+        while (p != null){
+            set.add(p);
+            p = p.next;
+        }
+        p = headB;
+        while(p != null){
+            if(set.contains(p)){
+                return p;
+            }else{
+                p = p.next;
+            }
+        }
+        return null;
+    }
 }
+
+
+class ListNode {
+      int val;
+      ListNode next;
+      ListNode(int x) {
+          val = x;
+          next = null;
+      }
+  }
+
 
 
 
