@@ -351,6 +351,69 @@ public class MeiTest {
         }
         return true;
     }
+
+    /**
+     * hot 33. 搜索旋转排序数组
+     */
+    public int search(int[] nums, int target) {
+        int len = nums.length;
+        int l = 0, r = len;
+        int m = (l+r)/2;
+
+        while(l<=r){
+            m = (l+r)/2;
+            //当前在旋转点左侧
+            if(nums[m] > nums[l]){
+                if(target < nums[m]){
+                    r = m;
+                    m = (l+m)/2;
+                }else{
+                    l = m;
+                    m = (m+r)/2;
+                }
+            }else if(nums[m] < nums[l]){
+                if(target > nums[m]){
+                    l = m;
+                    m = (m+r)/2;
+                }else{
+                    r = m;
+                    m = (m+l)/2;
+                }
+            }else {
+                return -1;
+            }
+        }
+        return nums[l];
+    }
+
+    @Test
+    public void testSearch(){
+        System.out.println(search(new int[]{4, 5, 6, 7, 0, 1, 2}, 4));
+    }
+
+    public int minDistance(String word1, String word2) {
+        int m = word1.length()+1, n = word2.length()+1;
+        int[][] dp = new int[m][n];
+        for (int i = 0; i < m; i++) {
+            dp[i][0] = i;
+        }
+        for (int i = 0; i < n; i++) {
+            dp[0][i] = i;
+        }
+
+        for (int i = 1; i < m; i++) {
+            for (int j = 1; j < n; j++) {
+                dp[i][j] = Math.min(dp[i-1][j], dp[i][j-1])+1;
+                if(word1.charAt(i-1) == word2.charAt(j-1)){
+                    dp[i][j] = Math.min(dp[i][j], dp[i-1][j-1]);
+                }else{
+                    dp[i][j] = Math.min(dp[i][j], dp[i-1][j-1]+1);
+                }
+            }
+        }
+        return dp[m-1][n-1];
+
+    }
 }
 
 
