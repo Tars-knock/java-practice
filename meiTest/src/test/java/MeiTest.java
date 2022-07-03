@@ -432,7 +432,91 @@ public class MeiTest {
         }
         return null;
     }
+
+    /**
+     * 6018 解密信消息
+     */
+    public String decodeMessage(String key, String message) {
+        HashMap<Character, Character> keyMap = new HashMap<>();
+        char[] sc = key.toCharArray();
+        keyMap.put(' ', ' ');
+        for(int i = 0;i<sc.length;i++) {
+            if(!keyMap.containsKey(sc[i])){
+                keyMap.put(sc[i], (char) (keyMap.size()-1+'a'));
+            }
+        }
+        StringBuffer sb = new StringBuffer();
+        for(char c : message.toCharArray()){
+            sb.append(keyMap.get(c));
+        }
+        return sb.toString();
+    }
+
+    @Test
+    public void testOfDecodeMessage(){
+        String key = "the quick brown fox jumps over the lazy dog";
+        String message = "vkbs bs t suepuv";
+        System.out.println(decodeMessage(key, message));
+    }
+
+    /**
+     * 6111. 螺旋矩阵 IV
+     */
+    public int[][] spiralMatrix(int m, int n, ListNode head) {
+        int[][] res = new int[m][n];
+        for(int[] ar: res){
+            Arrays.fill(ar, -1);
+        }
+        int right = n,left = 0,up = 0, down = m, directionX = 1, directionY = 1;
+        int i = up, j = left;
+        try {
+            while (head != null) {
+                for (j = left; j < right; j++) {
+                    res[up][j] = head.val;
+                    head = head.next;
+                }
+
+                for (i = up+1; i < down; i++) {
+                    res[i][right - 1] = head.val;
+                    head = head.next;
+                }
+
+                if (down > up && right > left) {
+                    for (j = right - 2; j >= left; j--) {
+                        res[down - 1][j] = head.val;
+                        head = head.next;
+                    }
+                    for (i = down - 2; i >= up-1; i--) {
+                        res[i][left] = head.val;
+                        head = head.next;
+                    }
+                }
+                left++;
+                up++;
+                right--;
+                down--;
+            }
+        }catch (NullPointerException e){
+            return res;
+        }
+
+        return res;
+    }
+
+    @Test
+    public void testOfSpiralMatrix() {
+        int[] arr = new int[] {3,0,2,6,8,1,7,9,4,2,5,5,0};
+        ListNode head = new ListNode(arr[0]);
+        ListNode p = head;
+        for(int i = 1;i<arr.length;i++){
+            head.next = new ListNode(arr[i]);
+            head = head.next;
+        }
+        spiralMatrix(3, 5, p);
+    }
 }
+
+
 
 
 class ListNode {
