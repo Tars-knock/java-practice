@@ -584,6 +584,7 @@ public class MeiTest {
 
 class ListNode {
       int val;
+      int test;
       ListNode next;
       ListNode(int x) {
           val = x;
