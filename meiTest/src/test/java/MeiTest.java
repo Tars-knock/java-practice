@@ -2,6 +2,8 @@ import org.junit.jupiter.api.Test;
 import org.w3c.dom.Node;
 
 import java.util.*;
+import java.util.function.Function;
+import java.util.stream.Collectors;
 
 public class MeiTest {
     //leetcode周赛288
@@ -513,6 +515,67 @@ public class MeiTest {
             head = head.next;
         }
         spiralMatrix(3, 5, p);
+    }
+
+    public int[] numberOfPairs(int[] nums) {
+        int[] storage = new int[200];
+        int res = 0;
+        for (int num : nums) {
+            storage[num]++;
+            if(storage[num] == 2){
+                res ++;
+                storage[num] = 0;
+            }
+        }
+        return new int[]{res, nums.length-res*2};
+    }
+
+    public int maximumSum(int[] nums) {
+        Map<Integer, Integer> map = new HashMap<>();
+        int finalRes = 0;
+        for (int num : nums) {
+            char[] n = String.valueOf(num).toCharArray();
+            int sum = 0;
+            for (char c : n) {
+                sum += c-'0';
+            }
+            if(map.get(sum) != null){
+                finalRes = Math.max(num+map.get(sum), finalRes);
+                if(num > map.get(sum)){
+                    map.put(sum, num);
+                }
+            }else{
+                map.put(sum, num);
+            }
+        }
+        return finalRes == 0? -1:finalRes;
+    }
+
+    public int[] smallestTrimmedNumbers(String[] nums, int[][] queries) {
+        int[] res = new int[queries.length];
+        int flag = 0;
+        for (int[] query : queries) {
+            List<Long> trimNum = Arrays.stream(nums).map(num -> Long.parseLong( num.substring(num.length()-query[1]))).collect(Collectors.toList());
+            int pos = 0;
+            Map<Long, Integer> posMap = new HashMap<>();
+            for (Long integer : trimNum) {
+                if(posMap.get(integer) == null) {
+                    posMap.put(integer, pos++);
+                }
+            }
+            trimNum.sort(Comparator.comparing(Long::longValue));
+//            List<Long> disint = trimNum.stream().distinct().collect(Collectors.toList());
+            res[flag++] = posMap.get(trimNum.get(query[0]-1));
+        }
+        return  res;
+    }
+
+    @Test
+    public void testOfsmall(){
+        for (int i : smallestTrimmedNumbers(new String[]{"325240361872", "440618160237", "785744447413", "820980201297", "470082520306", "874146483840", "425300857082", "088636787077", "813218016629", "459000328006", "188683382600"}, new int[][]{{6, 7}, {4, 4}, {1, 8}, {11, 10}, {4, 8}, {11, 6}, {1, 1}, {3, 1}, {11, 10}})) {
+            System.out.println(i);
+        }
+
     }
 }
 
